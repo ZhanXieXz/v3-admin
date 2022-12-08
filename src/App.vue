@@ -1,8 +1,7 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import { reactive, ref } from 'vue';
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue';
 
 
 let objs = ref({
@@ -14,7 +13,7 @@ let objs = ref({
 </script>
 
 <template>
-  <HelloWorld msg="Vite + Vue" :bar="123" :objs="objs"/>
+  <RouterView></RouterView>
 </template>
 
 <style scoped>
