@@ -1,17 +1,17 @@
 <template>
-    <div>{{ msg }}</div>
+    <el-button @click="store.commit('changeCount', store.state.count)">{{msg}}</el-button>
+    <div>{{store.state.count}}</div>
 </template>
 
 <script lang="ts" setup>
-import user from '@/utils/user'
 import { ref } from "vue";
+import { useStore } from 'vuex'
+import type { IState } from "@/store/index";
+const store = useStore<IState>()
 
 const msg = ref('home')
-console.log(user)
 </script>
 
 <style lang="scss" scoped>
-div {
-    color:$color
-}
+
 </style>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import locale from 'element-plus/dist/locale/zh-cn'
+
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { ref } from 'vue';
@@ -13,7 +15,9 @@ let objs = ref({
 </script>
 
 <template>
-  <RouterView></RouterView>
+  <el-config-provider :locale="locale">
+    <RouterView></RouterView>
+  </el-config-provider>
 </template>
 
 <style scoped>
