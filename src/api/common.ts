@@ -1,10 +1,10 @@
 import request from '../utils/request'
 import { IResponseData } from './types/common'
 
-export const getLoginInfo = () => {
-    return request.get<IResponseData<{
-        login_info: string,
-        login_imge: string,
-        slide: string[]
-    }>>('/api/login/info')
+export const login = (data: {account: string, password: string}) => {
+    return request.post<IResponseData<{
+        token: string,
+        profile: string,
+        express_time: number
+    }>>('/api/login/v1', data)
 }

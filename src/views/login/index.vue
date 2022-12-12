@@ -1,79 +1,88 @@
 <template>
-    <template>
-        <div class="login">
-            <!--
-      1. :model="ruleForm"
-      2. :rules="rules"
-      3. ref="ruleForm"
-      4. el-form-item 绑定 prop 属性
-     -->
-            <el-form class="login-form" label-position="top" ref="form" :model="form" :rules="rules" label-width="80px">
-                <el-form-item label="手机号" prop="phone">
-                    <el-input v-model="form.phone"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input type="password" v-model="form.password"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button class="login-btn" type="primary" :loading="isLoginLoading"
-                        @click="onSubmit">登录</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-    </template>
+  <div class="login">
+    <el-form
+      class="login-form"
+      label-position="top"
+      ref="form"
+      :model="userform"
+      :rules="rules"
+      label-width="80px"
+      @submit.prevent="onSubmit(form)"
+    >
+      <el-form-item label="用户名" prop="account">
+        <el-input v-model="userform.account"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input type="password" v-model="userform.password"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          v-loading="isLoginLoading"
+          class="login-btn"
+          type="primary"
+          native-type="submit"
+          >登录</el-button
+        >
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
-import type { IResponseData } from '@/api/types/common'
-import { getLoginInfo } from "@/api/common";
+import { reactive, ref } from "vue";
+import { login } from "@/api/common";
+import type { FormInstance, FormRules } from "element-plus";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const form = ref<FormInstance>();
 
-const msg = ref('login')
-let data = ref<IResponseData['data']>({})
-onMounted(() => {
-    getLoginInfo().then(res => {
-        console.log(res)
-        data.value = res.data.data
-    })
-})
+const userform = reactive({
+  account: "admin",
+  password: "123456",
+});
+console.log(userform);
+const rules = reactive<FormRules>({
+  password: [
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
+  ],
+});
+const isLoginLoading = ref(false);
 
-
-const form = reactive({
-    phone: '18201288771',
-    password: '111111'
-})
-const rules = reactive({
-    phone: [
-        { required: true, message: '请输入手机号', trigger: 'blur' },
-        { pattern: /^1\d{10}$/, message: '请输入正确的手机号', trigger: 'blur' }
-    ],
-    password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
-    ]
-})
-const isLoginLoading = ref(false)
-
-const onSubmit = () => {}
-
+const onSubmit = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  isLoginLoading.value = true;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      login(userform).then((res) => {
+        router.push("/");
+        localStorage.setItem("express_time", res.data.data.express_time + "");
+        localStorage.setItem("token", res.data.data.token);
+      });
+      isLoginLoading.value = false;
+    } else {
+      console.log("error submit!", fields);
+    }
+  });
+};
 </script>
 
 <style lang="scss" scoped>
 .login {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .login-form {
-        width: 300px;
-        background: #fff;
-        padding: 20px;
-        border-radius: 5px;
-    }
+  .login-form {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+  }
 
-    .login-btn {
-        width: 100%;
-    }
+  .login-btn {
+    width: 100%;
+  }
 }
 </style>
