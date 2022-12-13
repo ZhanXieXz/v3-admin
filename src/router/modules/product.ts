@@ -5,7 +5,8 @@ const router: RouteRecordRaw = {
     name: 'product',
     component: RouterView,
     meta: {
-        title: "商品"
+        title: "商品",
+        requireAuth: true
     },
     children: [
         {

@@ -1,13 +1,12 @@
 <template>
-    <el-button @click="store.commit('changeCount', store.state.count)">{{msg}}</el-button>
-    <div>{{store.state.count}}</div>
+    <div>{{store.state.userInfo?.name}}</div>123
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useStore } from 'vuex'
-import type { IState } from "@/store/index";
-const store = useStore<IState>()
+import type { State } from "@/store/index";
+const store = useStore<State>()
 
 const msg = ref('home')
 </script>

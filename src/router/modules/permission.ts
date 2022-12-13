@@ -5,7 +5,8 @@ const router: RouteRecordRaw = {
     name: 'permission',
     component: RouterView,
     meta: {
-        title: "权限"
+        title: "权限",
+        requireAuth: true
     },
     children: [
         {

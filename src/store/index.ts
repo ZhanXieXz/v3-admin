@@ -1,20 +1,20 @@
 import { createStore, Store, useStore as baseUseStore } from "vuex";
-import { InjectionKey } from "vue";
+import type { Iuserinfo } from "../api/types/common";
+import { getItem, setItem } from '../utils/storage'
 
-export interface IState {
-    count: number
+const state = {
+    userInfo: getItem<Iuserinfo>('userInfo')
 }
+console.log(state)
+export type State = typeof state
 
-
-export const store = createStore<IState> ({
-    state() {
-        return {
-            count: 1
-        }
-    },
+export const store = createStore<State> ({
+    state,
     mutations: {
-        changeCount (state, count) {
-            state.count += count
+        changeUserInfo (state, user) {
+            console.log('user', user);
+            state.userInfo = user
+            setItem('userInfo', state.userInfo)
         }
     }
 })

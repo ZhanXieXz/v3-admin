@@ -1,14 +1,7 @@
 <template>
   <div class="login">
-    <el-form
-      class="login-form"
-      label-position="top"
-      ref="form"
-      :model="userform"
-      :rules="rules"
-      label-width="80px"
-      @submit.prevent="onSubmit(form)"
-    >
+    <el-form class="login-form" label-position="top" ref="form" :model="userform" :rules="rules" label-width="80px"
+      @submit.prevent="onSubmit(form)">
       <el-form-item label="用户名" prop="account">
         <el-input v-model="userform.account"></el-input>
       </el-form-item>
@@ -16,13 +9,7 @@
         <el-input type="password" v-model="userform.password"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button
-          v-loading="isLoginLoading"
-          class="login-btn"
-          type="primary"
-          native-type="submit"
-          >登录</el-button
-        >
+        <el-button v-loading="isLoginLoading" class="login-btn" type="primary" native-type="submit">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -31,16 +18,19 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { login } from "@/api/common";
+import { store } from "@/store/index";
+import { useRouter, useRoute } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
-import { useRouter } from "vue-router";
+
 const router = useRouter();
+const route = useRoute();
 const form = ref<FormInstance>();
+
 
 const userform = reactive({
   account: "admin",
   password: "123456",
 });
-console.log(userform);
 const rules = reactive<FormRules>({
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
@@ -55,9 +45,9 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       login(userform).then((res) => {
-        router.push("/");
-        localStorage.setItem("express_time", res.data.data.express_time + "");
-        localStorage.setItem("token", res.data.data.token);
+        let redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+        router.replace(redirect);
+        store.commit('changeUserInfo', res.data.data)
       });
       isLoginLoading.value = false;
     } else {
@@ -73,6 +63,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgb(243, 194, 202);
 
   .login-form {
     width: 300px;
